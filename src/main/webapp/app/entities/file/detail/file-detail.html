@@ -1,0 +1,43 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (file(); as fileRef) {
+      <div>
+        <h2 data-cy="fileDetailsHeading"><span jhiTranslate="coreApp.file.detail.title">File</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ fileRef.id }}</span>
+          </dd>
+        </dl>
+
+        <dt><span>URL</span></dt>
+        <dd>
+          <a [href]="fileRef.url" target="_blank">{{ fileRef.url }}</a>
+        </dd>
+
+        <dt><span jhiTranslate="global.field.createdBy">Created By</span></dt>
+        <dd>{{ fileRef.createdBy }}</dd>
+
+        <dt><span jhiTranslate="global.field.createdDate">Created Date</span></dt>
+        <dd>{{ fileRef.createdDate }}</dd>
+
+        <dt><span jhiTranslate="global.field.lastModifiedBy">Last Modified By</span></dt>
+        <dd>{{ fileRef.lastModifiedBy }}</dd>
+
+        <dt><span jhiTranslate="global.field.lastModifiedDate">Last Modified Date</span></dt>
+        <dd>{{ fileRef.lastModifiedDate }}</dd>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>
