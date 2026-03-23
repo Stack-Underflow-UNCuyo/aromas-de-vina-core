@@ -21,6 +21,7 @@
     "microfrontends": [],
     "nativeLanguage": "en",
     "packageName": "com.aromasdevina.core",
+    "pkType": "UUID",
     "prodDatabaseType": "postgresql",
     "reactive": false,
     "serverPort": null,
