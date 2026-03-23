@@ -1,8 +1,8 @@
 {
-  "id": "jhipster",
-  "realm": "jhipster",
-  "displayName": "JHipster",
-  "displayNameHtml": "<div class=\"kc-logo-text\"><span>JHipster</span></div>",
+  "id": "aromas-de-vina",
+  "realm": "aromas-de-vina",
+  "displayName": "Aromas de Viña",
+  "displayNameHtml": "<div class=\"kc-logo-text\"><span>Aromas de Viña</span></div>",
   "notBefore": 0,
   "defaultSignatureAlgorithm": "RS256",
   "revokeRefreshToken": false,
@@ -50,10 +50,10 @@
       {
         "id": "8e986fb5-dafb-43bf-a7c2-7e57572d3d80",
         "name": "ROLE_ADMIN",
-        "description": "Jhipster administrator role",
+        "description": "Aromas de Viña administrator role",
         "composite": false,
         "clientRole": false,
-        "containerId": "jhipster",
+        "containerId": "aromas-de-vina",
         "attributes": {}
       },
       {
@@ -62,21 +62,21 @@
         "description": "${role_offline-access}",
         "composite": false,
         "clientRole": false,
-        "containerId": "jhipster",
+        "containerId": "aromas-de-vina",
         "attributes": {}
       },
       {
         "id": "ec5705e1-fc1d-4d21-8364-abd3bd4efcd0",
         "name": "ROLE_USER",
-        "description": "Jhipster user role",
+        "description": "Aromas de Viña user role",
         "composite": false,
         "clientRole": false,
-        "containerId": "jhipster",
+        "containerId": "aromas-de-vina",
         "attributes": {}
       },
       {
         "id": "d2b73e7b-a2d7-40e9-8ebc-2af00454e8aa",
-        "name": "default-roles-jhipster",
+        "name": "default-roles-aromas-de-vina",
         "description": "${role_default-roles}",
         "composite": true,
         "composites": {
@@ -86,7 +86,7 @@
           }
         },
         "clientRole": false,
-        "containerId": "jhipster",
+        "containerId": "aromas-de-vina",
         "attributes": {}
       },
       {
@@ -95,7 +95,7 @@
         "description": "${role_uma_authorization}",
         "composite": false,
         "clientRole": false,
-        "containerId": "jhipster",
+        "containerId": "aromas-de-vina",
         "attributes": {}
       }
     ],
@@ -431,11 +431,11 @@
   ],
   "defaultRole": {
     "id": "d2b73e7b-a2d7-40e9-8ebc-2af00454e8aa",
-    "name": "default-roles-jhipster",
+    "name": "default-roles-aromas-de-vina",
     "description": "${role_default-roles}",
     "composite": true,
     "clientRole": false,
-    "containerId": "jhipster"
+    "containerId": "aromas-de-vina"
   },
   "requiredCredentials": ["password"],
   "defaultGroups": ["/Users"],
@@ -481,7 +481,7 @@
       "serviceAccountClientId": "internal",
       "disableableCredentialTypes": [],
       "requiredActions": [],
-      "realmRoles": ["default-roles-jhipster"],
+      "realmRoles": ["default-roles-aromas-de-vina"],
       "notBefore": 0,
       "groups": []
     }
@@ -506,13 +506,13 @@
       "clientId": "account",
       "name": "${client_account}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/jhipster/account/",
+      "baseUrl": "/realms/aromas-de-vina/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "dfb5c7b6-0fc5-440f-845c-9baed645e2c3",
-      "redirectUris": ["/realms/jhipster/account/*"],
+      "redirectUris": ["/realms/aromas-de-vina/account/*"],
       "webOrigins": [],
       "notBefore": 0,
       "bearerOnly": false,
@@ -538,13 +538,13 @@
       "clientId": "account-console",
       "name": "${client_account-console}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/jhipster/account/",
+      "baseUrl": "/realms/aromas-de-vina/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "5b960866-a0bf-4ae2-8f15-3750080fb391",
-      "redirectUris": ["/realms/jhipster/account/*"],
+      "redirectUris": ["/realms/aromas-de-vina/account/*"],
       "webOrigins": [],
       "notBefore": 0,
       "bearerOnly": false,
@@ -677,7 +677,7 @@
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": true,
       "nodeReRegistrationTimeout": -1,
-      "defaultClientScopes": ["web-origins", "acr", "jhipster", "roles", "profile", "email"],
+      "defaultClientScopes": ["web-origins", "acr", "aromas-de-vina", "roles", "profile", "email"],
       "optionalClientScopes": ["address", "phone", "offline_access", "microprofile-jwt"]
     },
     {
@@ -715,13 +715,13 @@
       "clientId": "security-admin-console",
       "name": "${client_security-admin-console}",
       "rootUrl": "${authAdminUrl}",
-      "baseUrl": "/admin/jhipster/console/",
+      "baseUrl": "/admin/aromas-de-vina/console/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "082cd8cf-c61c-45d3-ad6d-adf23dba7a76",
-      "redirectUris": ["/admin/jhipster/console/*"],
+      "redirectUris": ["/admin/aromas-de-vina/console/*"],
       "webOrigins": ["+"],
       "notBefore": 0,
       "bearerOnly": false,
@@ -808,7 +808,7 @@
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": true,
       "nodeReRegistrationTimeout": -1,
-      "defaultClientScopes": ["web-origins", "acr", "jhipster", "roles", "profile", "email"],
+      "defaultClientScopes": ["web-origins", "acr", "aromas-de-vina", "roles", "profile", "email"],
       "optionalClientScopes": ["address", "phone", "offline_access", "microprofile-jwt"]
     }
   ],
@@ -889,8 +889,8 @@
     },
     {
       "id": "9816de82-24b7-42fe-a85a-1264868ec293",
-      "name": "jhipster",
-      "description": "Jhipster specific claims",
+      "name": "aromas-de-vina",
+      "description": "Aromas de Viña specific claims",
       "protocol": "openid-connect",
       "attributes": {
         "include.in.token.scope": "false",
