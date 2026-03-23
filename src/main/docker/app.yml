@@ -14,6 +14,11 @@ services:
       - SPRING_DATASOURCE_USERNAME=core
       - SPRING_DATASOURCE_PASSWORD=
       - SPRING_LIQUIBASE_URL=jdbc:postgresql://postgresql:5432/core
+      - APPLICATION_STORAGE_ENDPOINT=http://minio:9000
+      - APPLICATION_STORAGE_ACCESS_KEY=core
+      - APPLICATION_STORAGE_SECRET_KEY=minioadmin
+      - APPLICATION_STORAGE_BUCKET=aromas-de-vina
+      - APPLICATION_STORAGE_REGION=us-east-1
     ports:
       - 127.0.0.1:8080:8080
     healthcheck:

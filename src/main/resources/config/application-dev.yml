@@ -87,4 +87,10 @@ jhipster:
 # https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
-# application:
+application:
+  storage:
+    endpoint: http://localhost:9000
+    access-key: core
+    secret-key: minioadmin
+    bucket: aromas-de-vina
+    region: us-east-1
