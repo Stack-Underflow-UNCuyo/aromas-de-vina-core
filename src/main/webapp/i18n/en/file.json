@@ -17,7 +17,12 @@
       "detail": {
         "title": "File"
       },
-      "id": "ID"
+      "id": "ID",
+      "visibility": "Visibility"
+    },
+    "FileVisibility": {
+      "PRIVATE": "Private",
+      "PUBLIC": "Public"
     }
   }
 }

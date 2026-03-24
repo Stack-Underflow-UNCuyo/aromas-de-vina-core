@@ -35,7 +35,7 @@ public class FileResource {
 
     private static final String ENTITY_NAME = "file";
 
-    @Value("${jhipster.clientApp.name:starter}")
+    @Value("${jhipster.clientApp.name:core}")
     private String applicationName;
 
     private final FileService fileService;

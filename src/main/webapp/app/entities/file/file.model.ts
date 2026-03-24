@@ -1,3 +1,5 @@
+export type FileVisibility = 'PRIVATE' | 'PUBLIC';
+
 export interface IFile {
   id: string;
   url?: string | null;
@@ -7,4 +9,7 @@ export interface IFile {
   lastModifiedDate?: string | null;
 }
 
-export type NewFile = Omit<IFile, 'id'> & { id: null };
+export type NewFile = Omit<IFile, 'id'> & {
+  id: null;
+  visibility: FileVisibility;
+};

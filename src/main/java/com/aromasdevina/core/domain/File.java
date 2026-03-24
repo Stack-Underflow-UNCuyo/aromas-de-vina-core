@@ -22,6 +22,10 @@ public class File extends AbstractAuditingEntity<UUID> {
     @Column(name = "id")
     private UUID id;
 
+    @Column(name = "visibility", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private FileVisibility visibility;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public UUID getId() {
@@ -35,6 +39,23 @@ public class File extends AbstractAuditingEntity<UUID> {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public FileVisibility getVisibility() {
+        return this.visibility;
+    }
+
+    public File visibility(FileVisibility visibility) {
+        this.setVisibility(visibility);
+        return this;
+    }
+
+    public void setVisibility(FileVisibility visibility) {
+        this.visibility = visibility;
+    }
+
+    public String getKey() {
+        return visibility == FileVisibility.PUBLIC ? "public/" + this.id.toString() : this.id.toString();
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and

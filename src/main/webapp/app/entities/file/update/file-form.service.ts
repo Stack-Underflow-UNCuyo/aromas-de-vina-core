@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { IFile, NewFile } from '../file.model';
+import { type FileVisibility, IFile, NewFile } from '../file.model';
 
 /**
  * A partial Type with required key is used as form input.
@@ -14,10 +14,11 @@ type PartialWithRequiredKeyOf<T extends { id: unknown }> = Partial<Omit<T, 'id'>
  */
 type FileFormGroupInput = IFile | PartialWithRequiredKeyOf<NewFile>;
 
-type FileFormDefaults = Pick<NewFile, 'id'>;
+type FileFormDefaults = Pick<NewFile, 'id' | 'visibility'>;
 
 type FileFormGroupContent = {
   id: FormControl<IFile['id'] | NewFile['id']>;
+  visibility: FormControl<NewFile['visibility']>;
 };
 
 export type FileFormGroup = FormGroup<FileFormGroupContent>;
@@ -37,6 +38,10 @@ export class FileFormService {
           validators: [Validators.required],
         },
       ),
+      visibility: new FormControl(fileRawValue.visibility, {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
     });
   }
 
@@ -55,6 +60,7 @@ export class FileFormService {
   private getFormDefaults(): FileFormDefaults {
     return {
       id: null,
+      visibility: 'PRIVATE',
     };
   }
 }

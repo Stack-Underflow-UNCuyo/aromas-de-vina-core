@@ -48,4 +48,9 @@ public class StorageServiceImpl implements StorageService {
             throw new RuntimeException("Failed to generate presigned URL", e);
         }
     }
+
+    @Override
+    public URI getPublicUrl(String key) {
+        return URI.create(storage.getEndpoint() + "/" + storage.getBucket() + "/" + key);
+    }
 }

@@ -15,6 +15,18 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 @Configuration
 public class StorageConfiguration {
 
+    private static final String POLICY = """
+        {
+          "Version": "2012-10-17",
+          "Statement": [{
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": ["s3:GetObject"],
+            "Resource": ["arn:aws:s3:::%s/public/*"]
+          }]
+        }
+        """;
+
     @Bean
     public S3Client s3Client(ApplicationProperties properties) {
         ApplicationProperties.Storage storage = properties.getStorage();
@@ -45,11 +57,14 @@ public class StorageConfiguration {
     public ApplicationRunner createBucket(S3Client s3Client, ApplicationProperties properties) {
         return args -> {
             String bucket = properties.getStorage().getBucket();
+
             try {
                 s3Client.headBucket(request -> request.bucket(bucket));
             } catch (NoSuchBucketException e) {
                 s3Client.createBucket(createBucketRequest -> createBucketRequest.bucket(bucket));
             }
+
+            s3Client.putBucketPolicy(request -> request.bucket(bucket).policy(String.format(POLICY, bucket)));
         };
     }
 }

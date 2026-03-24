@@ -1,6 +1,7 @@
 package com.aromasdevina.core.service.impl;
 
 import com.aromasdevina.core.domain.File;
+import com.aromasdevina.core.domain.FileVisibility;
 import com.aromasdevina.core.repository.FileRepository;
 import com.aromasdevina.core.service.FileService;
 import com.aromasdevina.core.service.StorageService;
@@ -42,9 +43,9 @@ public class FileServiceImpl implements FileService {
     @Override
     public FileDTO save(FileCreateDTO fileCreateDTO) {
         LOG.debug("Request to save File : {}", fileCreateDTO);
-        File file = fileRepository.save(new File());
+        File file = fileRepository.save(fileMapper.toEntity(fileCreateDTO));
         FileDTO dto = fileMapper.toDto(file);
-        dto.setUrl(storageService.presignPut(file.getId().toString(), fileCreateDTO.getContentType(), PRESIGNED_URL_EXPIRY));
+        dto.setUrl(storageService.presignPut(file.getKey(), fileCreateDTO.getContentType(), PRESIGNED_URL_EXPIRY));
         return dto;
     }
 
@@ -54,9 +55,13 @@ public class FileServiceImpl implements FileService {
         LOG.debug("Request to get File : {}", id);
         return fileRepository
             .findById(id)
-            .map(fileMapper::toDto)
-            .map(dto -> {
-                dto.setUrl(storageService.presignGet(dto.getId().toString(), PRESIGNED_URL_EXPIRY));
+            .map(file -> {
+                FileDTO dto = fileMapper.toDto(file);
+                if (file.getVisibility() == FileVisibility.PUBLIC) {
+                    dto.setUrl(storageService.getPublicUrl(file.getKey()));
+                } else {
+                    dto.setUrl(storageService.presignGet(file.getKey(), PRESIGNED_URL_EXPIRY));
+                }
                 return dto;
             });
     }
