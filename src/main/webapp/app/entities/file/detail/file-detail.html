@@ -15,24 +15,29 @@
           <dd>
             <span>{{ fileRef.id }}</span>
           </dd>
+          <dt><span jhiTranslate="coreApp.file.visibility">Visibility</span></dt>
+          <dd>
+            <span [jhiTranslate]="'coreApp.FileVisibility.' + (fileRef.visibility ?? 'null')">{{
+              { null: '', PRIVATE: 'PRIVATE', PUBLIC: 'PUBLIC' }[fileRef.visibility ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span>URL</span></dt>
+          <dd>
+            <a [href]="fileRef.url" target="_blank">{{ fileRef.url }}</a>
+          </dd>
+
+          <dt><span jhiTranslate="global.field.createdBy">Created By</span></dt>
+          <dd>{{ fileRef.createdBy }}</dd>
+
+          <dt><span jhiTranslate="global.field.createdDate">Created Date</span></dt>
+          <dd>{{ fileRef.createdDate }}</dd>
+
+          <dt><span jhiTranslate="global.field.lastModifiedBy">Last Modified By</span></dt>
+          <dd>{{ fileRef.lastModifiedBy }}</dd>
+
+          <dt><span jhiTranslate="global.field.lastModifiedDate">Last Modified Date</span></dt>
+          <dd>{{ fileRef.lastModifiedDate }}</dd>
         </dl>
-
-        <dt><span>URL</span></dt>
-        <dd>
-          <a [href]="fileRef.url" target="_blank">{{ fileRef.url }}</a>
-        </dd>
-
-        <dt><span jhiTranslate="global.field.createdBy">Created By</span></dt>
-        <dd>{{ fileRef.createdBy }}</dd>
-
-        <dt><span jhiTranslate="global.field.createdDate">Created Date</span></dt>
-        <dd>{{ fileRef.createdDate }}</dd>
-
-        <dt><span jhiTranslate="global.field.lastModifiedBy">Last Modified By</span></dt>
-        <dd>{{ fileRef.lastModifiedBy }}</dd>
-
-        <dt><span jhiTranslate="global.field.lastModifiedDate">Last Modified Date</span></dt>
-        <dd>{{ fileRef.lastModifiedDate }}</dd>
 
         <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
           <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Back</span>

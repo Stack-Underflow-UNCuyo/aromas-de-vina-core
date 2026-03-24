@@ -42,6 +42,13 @@
                 <fa-icon class="p-1" icon="sort" />
               </div>
             </th>
+            <th scope="col" jhiSortBy="visibility">
+              <div class="d-flex">
+                <span jhiTranslate="coreApp.file.visibility">Visibility</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -50,6 +57,9 @@
             <tr data-cy="entityTable">
               <td>
                 <a [routerLink]="['/file', file.id, 'view']">{{ file.id }}</a>
+              </td>
+              <td [jhiTranslate]="'coreApp.FileVisibility.' + (file.visibility ?? 'null')">
+                {{ { null: '', PRIVATE: 'PRIVATE', PUBLIC: 'PUBLIC' }[file.visibility ?? 'null'] }}
               </td>
               <td>
                 <a [href]="file.url" target="_blank">{{ file.url }}</a>

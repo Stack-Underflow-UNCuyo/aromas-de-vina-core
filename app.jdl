@@ -1,5 +1,9 @@
-entity File
-
+enum FileVisibility {
+  PRIVATE, PUBLIC
+}
+entity File {
+  visibility FileVisibility required
+}
 service * with serviceImpl
 dto * with mapstruct
 paginate * with pagination

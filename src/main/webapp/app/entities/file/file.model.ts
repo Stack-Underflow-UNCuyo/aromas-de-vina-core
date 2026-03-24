@@ -1,7 +1,8 @@
-export type FileVisibility = 'PRIVATE' | 'PUBLIC';
+import { FileVisibility } from 'app/entities/enumerations/file-visibility.model';
 
 export interface IFile {
   id: string;
+  visibility?: FileVisibility;
   url?: string | null;
   createdBy?: string | null;
   createdDate?: string | null;

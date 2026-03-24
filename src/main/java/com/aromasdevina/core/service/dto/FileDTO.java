@@ -1,5 +1,7 @@
 package com.aromasdevina.core.service.dto;
 
+import com.aromasdevina.core.domain.enumeration.FileVisibility;
+import jakarta.validation.constraints.*;
 import java.net.URI;
 import java.util.Objects;
 import java.util.UUID;
@@ -12,6 +14,9 @@ public class FileDTO extends AbstractAuditingDTO {
 
     private UUID id;
 
+    @NotNull
+    private FileVisibility visibility;
+
     private URI url;
 
     public UUID getId() {
@@ -20,6 +25,14 @@ public class FileDTO extends AbstractAuditingDTO {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public FileVisibility getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(FileVisibility visibility) {
+        this.visibility = visibility;
     }
 
     public URI getUrl() {
@@ -56,6 +69,7 @@ public class FileDTO extends AbstractAuditingDTO {
   public String toString() {
     return "FileDTO{" +
         "id='" + getId() + "'" +
+        ", visibility='" + getVisibility() + "'" +
         "}";
   }
 }

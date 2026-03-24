@@ -4,7 +4,14 @@
   },
   "applications": ["*"],
   "dto": "mapstruct",
-  "fields": [],
+  "fields": [
+    {
+      "fieldName": "visibility",
+      "fieldType": "FileVisibility",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "PRIVATE,PUBLIC"
+    }
+  ],
   "jpaMetamodelFiltering": true,
   "name": "File",
   "pagination": "pagination",

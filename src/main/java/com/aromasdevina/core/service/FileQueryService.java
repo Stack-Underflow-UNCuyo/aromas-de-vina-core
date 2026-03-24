@@ -72,7 +72,8 @@ public class FileQueryService extends QueryService<File> {
             // This has to be called first, because the distinct method returns null
             specification = Specification.allOf(
                 Boolean.TRUE.equals(criteria.getDistinct()) ? distinct(criteria.getDistinct()) : Specification.unrestricted(),
-                buildSpecification(criteria.getId(), File_.id)
+                buildSpecification(criteria.getId(), File_.id),
+                buildSpecification(criteria.getVisibility(), File_.visibility)
             );
         }
         return specification;

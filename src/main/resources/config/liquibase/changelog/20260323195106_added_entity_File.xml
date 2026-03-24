@@ -49,6 +49,7 @@
       tableName="file"
       usePreparedStatements="true">
       <column name="id" type="${uuidType}" />
+            <column name="visibility" type="string" />
       <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load
       columns here -->
     </loadData>

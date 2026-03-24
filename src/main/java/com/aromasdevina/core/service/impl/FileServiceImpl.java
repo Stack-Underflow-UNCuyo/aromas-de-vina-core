@@ -1,7 +1,7 @@
 package com.aromasdevina.core.service.impl;
 
 import com.aromasdevina.core.domain.File;
-import com.aromasdevina.core.domain.FileVisibility;
+import com.aromasdevina.core.domain.enumeration.FileVisibility;
 import com.aromasdevina.core.repository.FileRepository;
 import com.aromasdevina.core.service.FileService;
 import com.aromasdevina.core.service.StorageService;

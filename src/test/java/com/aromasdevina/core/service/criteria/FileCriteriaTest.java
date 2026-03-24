@@ -76,19 +76,24 @@ class FileCriteriaTest {
 
     private static void setAllFilters(FileCriteria fileCriteria) {
         fileCriteria.id();
+        fileCriteria.visibility();
         fileCriteria.distinct();
     }
 
     private static Condition<FileCriteria> criteriaFiltersAre(Function<Object, Boolean> condition) {
         return new Condition<>(
-            criteria -> condition.apply(criteria.getId()) && condition.apply(criteria.getDistinct()),
+            criteria ->
+                condition.apply(criteria.getId()) && condition.apply(criteria.getVisibility()) && condition.apply(criteria.getDistinct()),
             "every filter matches"
         );
     }
 
     private static Condition<FileCriteria> copyFiltersAre(FileCriteria copy, BiFunction<Object, Object, Boolean> condition) {
         return new Condition<>(
-            criteria -> condition.apply(criteria.getId(), copy.getId()) && condition.apply(criteria.getDistinct(), copy.getDistinct()),
+            criteria ->
+                condition.apply(criteria.getId(), copy.getId()) &&
+                condition.apply(criteria.getVisibility(), copy.getVisibility()) &&
+                condition.apply(criteria.getDistinct(), copy.getDistinct()),
             "every filter matches"
         );
     }

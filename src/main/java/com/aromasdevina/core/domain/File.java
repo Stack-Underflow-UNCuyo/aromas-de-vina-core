@@ -1,7 +1,8 @@
 package com.aromasdevina.core.domain;
 
+import com.aromasdevina.core.domain.enumeration.FileVisibility;
 import jakarta.persistence.*;
-import java.util.Objects;
+import jakarta.validation.constraints.*;
 import java.util.UUID;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -22,8 +23,9 @@ public class File extends AbstractAuditingEntity<UUID> {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "visibility", nullable = false)
+    @NotNull
     @Enumerated(EnumType.STRING)
+    @Column(name = "visibility", nullable = false)
     private FileVisibility visibility;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
@@ -74,7 +76,9 @@ public class File extends AbstractAuditingEntity<UUID> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        // see
+        // https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
+        return getClass().hashCode();
     }
 
     // prettier-ignore
@@ -82,6 +86,7 @@ public class File extends AbstractAuditingEntity<UUID> {
   public String toString() {
     return "File{" +
         "id=" + getId() +
+        ", visibility='" + getVisibility() + "'" +
         "}";
   }
 }

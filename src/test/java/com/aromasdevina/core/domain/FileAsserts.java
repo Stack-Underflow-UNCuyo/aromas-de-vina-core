@@ -45,7 +45,9 @@ public class FileAsserts {
      * @param actual the actual entity
      */
     public static void assertFileUpdatableFieldsEquals(File expected, File actual) {
-        // empty method
+        assertThat(actual)
+            .as("Verify File relevant properties")
+            .satisfies(a -> assertThat(a.getVisibility()).as("check visibility").isEqualTo(expected.getVisibility()));
     }
 
     /**

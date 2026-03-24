@@ -19,10 +19,6 @@
       },
       "id": "ID",
       "visibility": "Visibility"
-    },
-    "FileVisibility": {
-      "PRIVATE": "Private",
-      "PUBLIC": "Public"
     }
   }
 }

@@ -1,5 +1,6 @@
 package com.aromasdevina.core.service.criteria;
 
+import com.aromasdevina.core.domain.enumeration.FileVisibility;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
@@ -21,10 +22,29 @@ import tech.jhipster.service.filter.*;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class FileCriteria implements Serializable, Criteria {
 
+    /**
+     * Class for filtering FileVisibility
+     */
+    public static class FileVisibilityFilter extends Filter<FileVisibility> {
+
+        public FileVisibilityFilter() {}
+
+        public FileVisibilityFilter(FileVisibilityFilter filter) {
+            super(filter);
+        }
+
+        @Override
+        public FileVisibilityFilter copy() {
+            return new FileVisibilityFilter(this);
+        }
+    }
+
     @Serial
     private static final long serialVersionUID = 1L;
 
     private UUIDFilter id;
+
+    private FileVisibilityFilter visibility;
 
     private Boolean distinct;
 
@@ -32,6 +52,7 @@ public class FileCriteria implements Serializable, Criteria {
 
     public FileCriteria(FileCriteria other) {
         this.id = other.optionalId().map(UUIDFilter::copy).orElse(null);
+        this.visibility = other.optionalVisibility().map(FileVisibilityFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
@@ -57,6 +78,25 @@ public class FileCriteria implements Serializable, Criteria {
 
     public void setId(UUIDFilter id) {
         this.id = id;
+    }
+
+    public FileVisibilityFilter getVisibility() {
+        return visibility;
+    }
+
+    public Optional<FileVisibilityFilter> optionalVisibility() {
+        return Optional.ofNullable(visibility);
+    }
+
+    public FileVisibilityFilter visibility() {
+        if (visibility == null) {
+            setVisibility(new FileVisibilityFilter());
+        }
+        return visibility;
+    }
+
+    public void setVisibility(FileVisibilityFilter visibility) {
+        this.visibility = visibility;
     }
 
     public Boolean getDistinct() {
@@ -87,12 +127,12 @@ public class FileCriteria implements Serializable, Criteria {
             return false;
         }
         final FileCriteria that = (FileCriteria) o;
-        return Objects.equals(id, that.id) && Objects.equals(distinct, that.distinct);
+        return Objects.equals(id, that.id) && Objects.equals(visibility, that.visibility) && Objects.equals(distinct, that.distinct);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, distinct);
+        return Objects.hash(id, visibility, distinct);
     }
 
     // prettier-ignore
@@ -100,6 +140,7 @@ public class FileCriteria implements Serializable, Criteria {
     public String toString() {
         return "FileCriteria{" +
             optionalId().map(f -> "id=" + f + ", ").orElse("") +
+            optionalVisibility().map(f -> "visibility=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";
     }

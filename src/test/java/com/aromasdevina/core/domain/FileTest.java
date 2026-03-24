@@ -21,14 +21,4 @@ class FileTest {
         file2 = getFileSample2();
         assertThat(file1).isNotEqualTo(file2);
     }
-
-    @Test
-    void hashCodeVerifier() {
-        File file = new File();
-        assertThat(file.hashCode()).isZero();
-
-        File file1 = getFileSample1();
-        file.setId(file1.getId());
-        assertThat(file).hasSameHashCodeAs(file1);
-    }
 }

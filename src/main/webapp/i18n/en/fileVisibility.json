@@ -1,0 +1,9 @@
+{
+  "coreApp": {
+    "FileVisibility": {
+      "null": "",
+      "PRIVATE": "PRIVATE",
+      "PUBLIC": "PUBLIC"
+    }
+  }
+}

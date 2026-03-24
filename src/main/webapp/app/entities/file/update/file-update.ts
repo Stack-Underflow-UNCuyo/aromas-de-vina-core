@@ -7,9 +7,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
+import { FileVisibility } from 'app/entities/enumerations/file-visibility.model';
 import { AlertError } from 'app/shared/alert/alert-error';
 import { TranslateDirective } from 'app/shared/language';
-import { IFile } from '../file.model';
+import { type NewFile, IFile } from '../file.model';
 import { FileService } from '../service/file.service';
 
 import { FileFormGroup, FileFormService } from './file-form.service';
@@ -22,6 +23,7 @@ import { FileFormGroup, FileFormService } from './file-form.service';
 export class FileUpdate implements OnInit {
   readonly isSaving = signal(false);
   file: IFile | null = null;
+  fileVisibilityValues = Object.keys(FileVisibility);
 
   protected fileService = inject(FileService);
   protected fileFormService = inject(FileFormService);
@@ -46,7 +48,7 @@ export class FileUpdate implements OnInit {
   save(): void {
     this.isSaving.set(true);
     const file = this.fileFormService.getFile(this.editForm);
-    this.subscribeToSaveResponse(this.fileService.create(file));
+    this.subscribeToSaveResponse(this.fileService.create(file as NewFile));
   }
 
   protected subscribeToSaveResponse(result: Observable<IFile | null>): void {

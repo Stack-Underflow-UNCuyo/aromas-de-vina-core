@@ -1,6 +1,7 @@
 package com.aromasdevina.core.web.rest;
 
 import static com.aromasdevina.core.domain.FileAsserts.*;
+import static com.aromasdevina.core.web.rest.TestUtil.createUpdateProxyForBean;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -9,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.aromasdevina.core.IntegrationTest;
 import com.aromasdevina.core.domain.File;
+import com.aromasdevina.core.domain.enumeration.FileVisibility;
 import com.aromasdevina.core.repository.FileRepository;
 import com.aromasdevina.core.service.dto.FileDTO;
 import com.aromasdevina.core.service.mapper.FileMapper;
@@ -32,6 +34,9 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureMockMvc
 @WithMockUser
 class FileResourceIT {
+
+    private static final FileVisibility DEFAULT_VISIBILITY = FileVisibility.PRIVATE;
+    private static final FileVisibility UPDATED_VISIBILITY = FileVisibility.PUBLIC;
 
     private static final String ENTITY_API_URL = "/api/files";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -62,7 +67,7 @@ class FileResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static File createEntity() {
-        return new File();
+        return new File().visibility(DEFAULT_VISIBILITY);
     }
 
     /**
@@ -72,7 +77,7 @@ class FileResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static File createUpdatedEntity() {
-        return new File();
+        return new File().visibility(UPDATED_VISIBILITY);
     }
 
     @BeforeEach
@@ -132,6 +137,23 @@ class FileResourceIT {
 
     @Test
     @Transactional
+    void checkVisibilityIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        // set the field null
+        file.setVisibility(null);
+
+        // Create the File, which fails.
+        FileDTO fileDTO = fileMapper.toDto(file);
+
+        restFileMockMvc
+            .perform(post(ENTITY_API_URL).with(csrf()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(fileDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     void getAllFiles() throws Exception {
         // Initialize the database
         insertedFile = fileRepository.saveAndFlush(file);
@@ -141,7 +163,8 @@ class FileResourceIT {
             .perform(get(ENTITY_API_URL + "?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(file.getId().toString())));
+            .andExpect(jsonPath("$.[*].id").value(hasItem(file.getId().toString())))
+            .andExpect(jsonPath("$.[*].visibility").value(hasItem(DEFAULT_VISIBILITY.toString())));
     }
 
     @Test
@@ -155,7 +178,8 @@ class FileResourceIT {
             .perform(get(ENTITY_API_URL_ID, file.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(file.getId().toString()));
+            .andExpect(jsonPath("$.id").value(file.getId().toString()))
+            .andExpect(jsonPath("$.visibility").value(DEFAULT_VISIBILITY.toString()));
     }
 
     @Test
@@ -167,6 +191,36 @@ class FileResourceIT {
         UUID id = file.getId();
 
         defaultFileFiltering("id.equals=" + id, "id.notEquals=" + id);
+    }
+
+    @Test
+    @Transactional
+    void getAllFilesByVisibilityIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedFile = fileRepository.saveAndFlush(file);
+
+        // Get all the fileList where visibility equals to
+        defaultFileFiltering("visibility.equals=" + DEFAULT_VISIBILITY, "visibility.equals=" + UPDATED_VISIBILITY);
+    }
+
+    @Test
+    @Transactional
+    void getAllFilesByVisibilityIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedFile = fileRepository.saveAndFlush(file);
+
+        // Get all the fileList where visibility in
+        defaultFileFiltering("visibility.in=" + DEFAULT_VISIBILITY + "," + UPDATED_VISIBILITY, "visibility.in=" + UPDATED_VISIBILITY);
+    }
+
+    @Test
+    @Transactional
+    void getAllFilesByVisibilityIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedFile = fileRepository.saveAndFlush(file);
+
+        // Get all the fileList where visibility is not null
+        defaultFileFiltering("visibility.specified=true", "visibility.specified=false");
     }
 
     private void defaultFileFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {
@@ -182,7 +236,8 @@ class FileResourceIT {
             .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(file.getId().toString())));
+            .andExpect(jsonPath("$.[*].id").value(hasItem(file.getId().toString())))
+            .andExpect(jsonPath("$.[*].visibility").value(hasItem(DEFAULT_VISIBILITY.toString())));
 
         // Check, that the count call also returns 1
         restFileMockMvc
@@ -216,6 +271,221 @@ class FileResourceIT {
     void getNonExistingFile() throws Exception {
         // Get the file
         restFileMockMvc.perform(get(ENTITY_API_URL_ID, UUID.randomUUID().toString())).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @Transactional
+    void putExistingFile() throws Exception {
+        // Initialize the database
+        insertedFile = fileRepository.saveAndFlush(file);
+
+        long databaseSizeBeforeUpdate = getRepositoryCount();
+
+        // Update the file
+        File updatedFile = fileRepository.findById(file.getId()).orElseThrow();
+        // Disconnect from session so that the updates on updatedFile are not directly saved in db
+        em.detach(updatedFile);
+        updatedFile.visibility(UPDATED_VISIBILITY);
+        FileDTO fileDTO = fileMapper.toDto(updatedFile);
+
+        restFileMockMvc
+            .perform(
+                put(ENTITY_API_URL_ID, fileDTO.getId())
+                    .with(csrf())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(om.writeValueAsBytes(fileDTO))
+            )
+            .andExpect(status().isOk());
+
+        // Validate the File in the database
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertPersistedFileToMatchAllProperties(updatedFile);
+    }
+
+    @Test
+    @Transactional
+    void putNonExistingFile() throws Exception {
+        long databaseSizeBeforeUpdate = getRepositoryCount();
+        file.setId(UUID.randomUUID());
+
+        // Create the File
+        FileDTO fileDTO = fileMapper.toDto(file);
+
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
+        restFileMockMvc
+            .perform(
+                put(ENTITY_API_URL_ID, fileDTO.getId())
+                    .with(csrf())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(om.writeValueAsBytes(fileDTO))
+            )
+            .andExpect(status().isBadRequest());
+
+        // Validate the File in the database
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+    }
+
+    @Test
+    @Transactional
+    void putWithIdMismatchFile() throws Exception {
+        long databaseSizeBeforeUpdate = getRepositoryCount();
+        file.setId(UUID.randomUUID());
+
+        // Create the File
+        FileDTO fileDTO = fileMapper.toDto(file);
+
+        // If url ID doesn't match entity ID, it will throw BadRequestAlertException
+        restFileMockMvc
+            .perform(
+                put(ENTITY_API_URL_ID, UUID.randomUUID())
+                    .with(csrf())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(om.writeValueAsBytes(fileDTO))
+            )
+            .andExpect(status().isBadRequest());
+
+        // Validate the File in the database
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+    }
+
+    @Test
+    @Transactional
+    void putWithMissingIdPathParamFile() throws Exception {
+        long databaseSizeBeforeUpdate = getRepositoryCount();
+        file.setId(UUID.randomUUID());
+
+        // Create the File
+        FileDTO fileDTO = fileMapper.toDto(file);
+
+        // If url ID doesn't match entity ID, it will throw BadRequestAlertException
+        restFileMockMvc
+            .perform(put(ENTITY_API_URL).with(csrf()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(fileDTO)))
+            .andExpect(status().isMethodNotAllowed());
+
+        // Validate the File in the database
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+    }
+
+    @Test
+    @Transactional
+    void partialUpdateFileWithPatch() throws Exception {
+        // Initialize the database
+        insertedFile = fileRepository.saveAndFlush(file);
+
+        long databaseSizeBeforeUpdate = getRepositoryCount();
+
+        // Update the file using partial update
+        File partialUpdatedFile = new File();
+        partialUpdatedFile.setId(file.getId());
+
+        partialUpdatedFile.visibility(UPDATED_VISIBILITY);
+
+        restFileMockMvc
+            .perform(
+                patch(ENTITY_API_URL_ID, partialUpdatedFile.getId())
+                    .with(csrf())
+                    .contentType("application/merge-patch+json")
+                    .content(om.writeValueAsBytes(partialUpdatedFile))
+            )
+            .andExpect(status().isOk());
+
+        // Validate the File in the database
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertFileUpdatableFieldsEquals(createUpdateProxyForBean(partialUpdatedFile, file), getPersistedFile(file));
+    }
+
+    @Test
+    @Transactional
+    void fullUpdateFileWithPatch() throws Exception {
+        // Initialize the database
+        insertedFile = fileRepository.saveAndFlush(file);
+
+        long databaseSizeBeforeUpdate = getRepositoryCount();
+
+        // Update the file using partial update
+        File partialUpdatedFile = new File();
+        partialUpdatedFile.setId(file.getId());
+
+        partialUpdatedFile.visibility(UPDATED_VISIBILITY);
+
+        restFileMockMvc
+            .perform(
+                patch(ENTITY_API_URL_ID, partialUpdatedFile.getId())
+                    .with(csrf())
+                    .contentType("application/merge-patch+json")
+                    .content(om.writeValueAsBytes(partialUpdatedFile))
+            )
+            .andExpect(status().isOk());
+
+        // Validate the File in the database
+
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+        assertFileUpdatableFieldsEquals(partialUpdatedFile, getPersistedFile(partialUpdatedFile));
+    }
+
+    @Test
+    @Transactional
+    void patchNonExistingFile() throws Exception {
+        long databaseSizeBeforeUpdate = getRepositoryCount();
+        file.setId(UUID.randomUUID());
+
+        // Create the File
+        FileDTO fileDTO = fileMapper.toDto(file);
+
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
+        restFileMockMvc
+            .perform(
+                patch(ENTITY_API_URL_ID, fileDTO.getId())
+                    .with(csrf())
+                    .contentType("application/merge-patch+json")
+                    .content(om.writeValueAsBytes(fileDTO))
+            )
+            .andExpect(status().isBadRequest());
+
+        // Validate the File in the database
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+    }
+
+    @Test
+    @Transactional
+    void patchWithIdMismatchFile() throws Exception {
+        long databaseSizeBeforeUpdate = getRepositoryCount();
+        file.setId(UUID.randomUUID());
+
+        // Create the File
+        FileDTO fileDTO = fileMapper.toDto(file);
+
+        // If url ID doesn't match entity ID, it will throw BadRequestAlertException
+        restFileMockMvc
+            .perform(
+                patch(ENTITY_API_URL_ID, UUID.randomUUID())
+                    .with(csrf())
+                    .contentType("application/merge-patch+json")
+                    .content(om.writeValueAsBytes(fileDTO))
+            )
+            .andExpect(status().isBadRequest());
+
+        // Validate the File in the database
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
+    }
+
+    @Test
+    @Transactional
+    void patchWithMissingIdPathParamFile() throws Exception {
+        long databaseSizeBeforeUpdate = getRepositoryCount();
+        file.setId(UUID.randomUUID());
+
+        // Create the File
+        FileDTO fileDTO = fileMapper.toDto(file);
+
+        // If url ID doesn't match entity ID, it will throw BadRequestAlertException
+        restFileMockMvc
+            .perform(patch(ENTITY_API_URL).with(csrf()).contentType("application/merge-patch+json").content(om.writeValueAsBytes(fileDTO)))
+            .andExpect(status().isMethodNotAllowed());
+
+        // Validate the File in the database
+        assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test

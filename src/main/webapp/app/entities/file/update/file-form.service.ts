@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { type FileVisibility, IFile, NewFile } from '../file.model';
+import { FileVisibility } from 'app/entities/enumerations/file-visibility.model';
+import { IFile, NewFile } from '../file.model';
 
 /**
  * A partial Type with required key is used as form input.
@@ -14,11 +15,14 @@ type PartialWithRequiredKeyOf<T extends { id: unknown }> = Partial<Omit<T, 'id'>
  */
 type FileFormGroupInput = IFile | PartialWithRequiredKeyOf<NewFile>;
 
-type FileFormDefaults = Pick<NewFile, 'id' | 'visibility'>;
+type FileFormDefaults = {
+  id: string | null;
+  visibility: FileVisibility;
+};
 
 type FileFormGroupContent = {
-  id: FormControl<IFile['id'] | NewFile['id']>;
-  visibility: FormControl<NewFile['visibility']>;
+  id: FormControl<string | null>;
+  visibility: FormControl<FileVisibility | null>;
 };
 
 export type FileFormGroup = FormGroup<FileFormGroupContent>;
@@ -39,28 +43,24 @@ export class FileFormService {
         },
       ),
       visibility: new FormControl(fileRawValue.visibility, {
-        nonNullable: true,
         validators: [Validators.required],
       }),
     });
   }
 
-  getFile(form: FileFormGroup): NewFile {
-    return form.getRawValue() as NewFile;
+  getFile(form: FileFormGroup): IFile | NewFile {
+    return form.getRawValue() as IFile | NewFile;
   }
 
   resetForm(form: FileFormGroup, file: FileFormGroupInput): void {
     const fileRawValue = { ...this.getFormDefaults(), ...file };
-    form.reset({
-      ...fileRawValue,
-      id: { value: fileRawValue.id, disabled: true },
-    });
+    form.reset(fileRawValue as any);
   }
 
   private getFormDefaults(): FileFormDefaults {
     return {
       id: null,
-      visibility: 'PRIVATE',
+      visibility: FileVisibility.PRIVATE,
     };
   }
 }

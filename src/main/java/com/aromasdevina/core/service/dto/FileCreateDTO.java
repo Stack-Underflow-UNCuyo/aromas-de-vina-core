@@ -1,6 +1,6 @@
 package com.aromasdevina.core.service.dto;
 
-import com.aromasdevina.core.domain.FileVisibility;
+import com.aromasdevina.core.domain.enumeration.FileVisibility;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;

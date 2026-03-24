@@ -17,7 +17,8 @@
       "detail": {
         "title": "File"
       },
-      "id": "ID"
+      "id": "ID",
+      "visibility": "Visibility"
     }
   }
 }

@@ -15,12 +15,22 @@
           </div>
         }
 
+        @let visibilityRef = editForm.get('visibility')!;
         <div class="mb-3">
           <label class="form-label" for="field_visibility" jhiTranslate="coreApp.file.visibility">Visibility</label>
-          <select class="form-control" name="visibility" id="field_visibility" formControlName="visibility" data-cy="visibility">
-            <option value="PRIVATE">{{ 'coreApp.FileVisibility.PRIVATE' | translate }}</option>
-            <option value="PUBLIC">{{ 'coreApp.FileVisibility.PUBLIC' | translate }}</option>
+          <select class="form-control" name="visibility" formControlName="visibility" id="field_visibility" data-cy="visibility">
+            <option [ngValue]="null">{{ 'coreApp.FileVisibility.null' | translate }}</option>
+            @for (fileVisibility of fileVisibilityValues; track $index) {
+              <option [value]="fileVisibility">{{ 'coreApp.FileVisibility.' + fileVisibility | translate }}</option>
+            }
           </select>
+          @if (visibilityRef.invalid && (visibilityRef.dirty || visibilityRef.touched)) {
+            <div>
+              @if (editForm.get('visibility')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
         </div>
       </div>
 
