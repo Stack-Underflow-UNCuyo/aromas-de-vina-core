@@ -21,8 +21,8 @@ type FileFormDefaults = {
 };
 
 type FileFormGroupContent = {
-  id: FormControl<string | null>;
-  visibility: FormControl<FileVisibility | null>;
+  id: FormControl<IFile['id'] | NewFile['id']>;
+  visibility: FormControl<IFile['visibility']>;
 };
 
 export type FileFormGroup = FormGroup<FileFormGroupContent>;
@@ -43,6 +43,7 @@ export class FileFormService {
         },
       ),
       visibility: new FormControl(fileRawValue.visibility, {
+        nonNullable: true,
         validators: [Validators.required],
       }),
     });

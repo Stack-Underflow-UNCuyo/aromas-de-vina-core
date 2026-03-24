@@ -48,7 +48,9 @@ export class FileUpdate implements OnInit {
   save(): void {
     this.isSaving.set(true);
     const file = this.fileFormService.getFile(this.editForm);
-    this.subscribeToSaveResponse(this.fileService.create(file as NewFile));
+    if (file.id === null) {
+      this.subscribeToSaveResponse(this.fileService.create(file));
+    }
   }
 
   protected subscribeToSaveResponse(result: Observable<IFile | null>): void {
