@@ -51,27 +51,28 @@ describe('File Management Update Component', () => {
       expect(comp.file).toEqual(file);
     });
   });
+  describe('save', () => {
+    it('should call create service on save for new entity', () => {
+      // GIVEN
+      const saveSubject = new Subject<IFile>();
+      const file = { id: 'b4cda08e-50b3-4383-a397-04fa73612acd' };
+      vitest.spyOn(fileFormService, 'getFile').mockReturnValue({ id: null });
+      vitest.spyOn(fileService, 'create').mockReturnValue(saveSubject);
+      vitest.spyOn(comp, 'previousState');
+      activatedRoute.data = of({ file: null });
+      comp.ngOnInit();
 
-  it('should call create service on save for new entity', () => {
-    // GIVEN
-    const saveSubject = new Subject<IFile>();
-    const file = { id: 'b4cda08e-50b3-4383-a397-04fa73612acd' };
-    vitest.spyOn(fileFormService, 'getFile').mockReturnValue({ id: null });
-    vitest.spyOn(fileService, 'create').mockReturnValue(saveSubject);
-    vitest.spyOn(comp, 'previousState');
-    activatedRoute.data = of({ file: null });
-    comp.ngOnInit();
+      // WHEN
+      comp.save();
+      expect(comp.isSaving()).toEqual(true);
+      saveSubject.next(file);
+      saveSubject.complete();
 
-    // WHEN
-    comp.save();
-    expect(comp.isSaving()).toEqual(true);
-    saveSubject.next(file);
-    saveSubject.complete();
-
-    // THEN
-    expect(fileFormService.getFile).toHaveBeenCalled();
-    expect(fileService.create).toHaveBeenCalled();
-    expect(comp.isSaving()).toEqual(false);
-    expect(comp.previousState).toHaveBeenCalled();
+      // THEN
+      expect(fileFormService.getFile).toHaveBeenCalled();
+      expect(fileService.create).toHaveBeenCalled();
+      expect(comp.isSaving()).toEqual(false);
+      expect(comp.previousState).toHaveBeenCalled();
+    });
   });
 });
