@@ -82,7 +82,11 @@
       }
     },
     "field": {
-      "id": "ID"
+      "id": "ID",
+      "createdBy": "Created by",
+      "createdDate": "Created date",
+      "lastModifiedBy": "Last modified by",
+      "lastModifiedDate": "Last modified date"
     },
     "ribbon": {
       "dev": "Development"
