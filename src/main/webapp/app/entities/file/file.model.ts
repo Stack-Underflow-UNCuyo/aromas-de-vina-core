@@ -2,12 +2,12 @@ import { FileVisibility } from 'app/entities/enumerations/file-visibility.model'
 
 export interface IFile {
   id: string;
-  visibility: FileVisibility;
-  url: string;
-  createdBy: string;
-  createdDate: string;
-  lastModifiedBy: string;
-  lastModifiedDate: string;
+  visibility?: FileVisibility | null;
+  url?: string | null;
+  createdBy?: string | null;
+  createdDate?: string | null;
+  lastModifiedBy?: string | null;
+  lastModifiedDate?: string | null;
 }
 
 // Cleaner NewFile type
