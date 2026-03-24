@@ -52,6 +52,14 @@ export class FileService extends FilesService {
     return file.id;
   }
 
+  upload(url: string, file: File): Observable<any> {
+    return this.http.put(url, file, {
+      headers: {
+        'Content-Type': file.type || 'application/octet-stream',
+      },
+    });
+  }
+
   compareFile(o1: Pick<IFile, 'id'> | null, o2: Pick<IFile, 'id'> | null): boolean {
     return o1 && o2 ? this.getFileIdentifier(o1) === this.getFileIdentifier(o2) : o1 === o2;
   }

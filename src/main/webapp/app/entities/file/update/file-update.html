@@ -32,6 +32,35 @@
             </div>
           }
         </div>
+
+        @let fileRef = editForm.get('file')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_file" jhiTranslate="coreApp.file.blob">File</label>
+          <div>
+            @if (fileRef.value) {
+              <div class="form-text text-danger clearfix">
+                <span class="pull-start">{{ fileRef.value.name }}, {{ byteSize(fileRef.value!) }}</span>
+                <button
+                  type="button"
+                  (click)="editForm.patchValue({ file: undefined, contentType: undefined })"
+                  class="btn btn-secondary btn-xs pull-end"
+                >
+                  <fa-icon icon="times" />
+                </button>
+              </div>
+            }
+            <input type="file" id="file_file" data-cy="file" (change)="setFileData($event, 'file')" jhiTranslate="entity.action.addblob" />
+          </div>
+          <input type="hidden" class="form-control" name="file" id="field_file" data-cy="file" formControlName="file" />
+          <input type="hidden" class="form-control" name="contentType" id="field_contentType" formControlName="contentType" />
+          @if (fileRef.invalid && (fileRef.dirty || fileRef.touched)) {
+            <div>
+              @if (editForm.get('file')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
       </div>
 
       <div>

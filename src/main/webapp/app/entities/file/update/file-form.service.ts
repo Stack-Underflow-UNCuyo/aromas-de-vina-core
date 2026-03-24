@@ -23,6 +23,8 @@ type FileFormDefaults = {
 type FileFormGroupContent = {
   id: FormControl<IFile['id'] | NewFile['id']>;
   visibility: FormControl<IFile['visibility']>;
+  file: FormControl<File | null | undefined>;
+  contentType: FormControl<string | null | undefined>;
 };
 
 export type FileFormGroup = FormGroup<FileFormGroupContent>;
@@ -46,6 +48,8 @@ export class FileFormService {
         nonNullable: true,
         validators: [Validators.required],
       }),
+      file: new FormControl<File | null | undefined>(undefined),
+      contentType: new FormControl<string | null | undefined>(undefined),
     });
   }
 

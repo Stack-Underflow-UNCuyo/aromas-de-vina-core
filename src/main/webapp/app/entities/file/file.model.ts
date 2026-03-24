@@ -13,4 +13,5 @@ export interface IFile {
 // Cleaner NewFile type
 export type NewFile = Omit<IFile, 'id' | 'createdBy' | 'createdDate' | 'lastModifiedBy' | 'lastModifiedDate'> & {
   id: null;
+  contentType?: string | null;
 };

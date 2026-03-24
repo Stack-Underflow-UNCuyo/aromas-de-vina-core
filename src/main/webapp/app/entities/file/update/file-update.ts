@@ -4,13 +4,13 @@ import { ActivatedRoute } from '@angular/router';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { TranslateModule } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
-import { FileVisibility } from 'app/entities/enumerations/file-visibility.model';
 import { AlertError } from 'app/shared/alert/alert-error';
 import { TranslateDirective } from 'app/shared/language';
-import { type NewFile, IFile } from '../file.model';
+import { FileVisibility } from 'app/entities/enumerations/file-visibility.model';
+import { type IFile } from '../file.model';
 import { FileService } from '../service/file.service';
 
 import { FileFormGroup, FileFormService } from './file-form.service';
@@ -41,6 +41,21 @@ export class FileUpdate implements OnInit {
     });
   }
 
+  byteSize(file: File): string {
+    return (file.size / 1024).toFixed(2) + ' KB';
+  }
+
+  setFileData(event: Event, field: string): void {
+    const eventTarget: HTMLInputElement | null = event.target as HTMLInputElement | null;
+    if (eventTarget?.files?.[0]) {
+      const selectedFile: File = eventTarget.files[0];
+      this.editForm.patchValue({
+        [field]: selectedFile,
+        contentType: selectedFile.type,
+      });
+    }
+  }
+
   previousState(): void {
     globalThis.history.back();
   }
@@ -48,17 +63,27 @@ export class FileUpdate implements OnInit {
   save(): void {
     this.isSaving.set(true);
     const file = this.fileFormService.getFile(this.editForm);
-    if (file.id === null) {
-      this.subscribeToSaveResponse(this.fileService.create(file));
+    const selectedFile = this.editForm.get('file')?.value;
+    const contentType = this.editForm.get('contentType')?.value;
+
+    if (file.id === null && selectedFile && contentType && file.visibility) {
+      this.subscribeToSaveResponse(
+        this.fileService.create({ id: null, visibility: file.visibility, contentType }).pipe(
+          switchMap(response => {
+            const uploadUrl = response.url;
+            if (!uploadUrl) {
+              throw new Error('No upload URL returned');
+            }
+            return this.fileService.upload(uploadUrl, selectedFile);
+          }),
+        ),
+      );
     }
   }
 
-  protected subscribeToSaveResponse(result: Observable<IFile | null>): void {
+  protected subscribeToSaveResponse(result: Observable<unknown>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
-      next: response => {
-        console.warn('PUT URL:', response?.url);
-        this.onSaveSuccess();
-      },
+      next: () => this.onSaveSuccess(),
       error: () => this.onSaveError(),
     });
   }
